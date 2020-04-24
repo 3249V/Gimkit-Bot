@@ -4,7 +4,6 @@ from selenium.common.exceptions import ElementClickInterceptedException
 import time
 import random
 
-#gamecode = "51993"
 questions = {}
 upgrade_num = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 3, 2, 1, 3, 2, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
 upgrade_cost = [10, 15, 50, 100, 150, 300, 1000, 1500, 2000, 10000, 12000, 15000, 75000, 85000, 115000, 300000, 450000,
@@ -18,8 +17,6 @@ class GimkitBot():
     def __init__(self):
         self.driver = webdriver.Chrome()
         self.step = -1
-        #self.driver.set_window_position(0,-10000)
-        # self.driver.get("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
     def join(self, gamecode):
         self.driver.get("https://www.gimkit.com/play")
