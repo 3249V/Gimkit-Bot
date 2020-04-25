@@ -8,7 +8,7 @@ error_var = StringVar()
 def startcmd():
     if code.get() == '':
         return error_var.set("You didn't enter a code. Try entering a code.")
-    bot = GimkitBot(code.get())
+    GimkitBot(code.get())
 
 
 class EntryWithPlaceholder(tkinter.Entry):

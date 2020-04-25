@@ -16,7 +16,6 @@ wait = 0.3
 class GimkitBot():
     def __init__(self, gc):
         self.driver = webdriver.Chrome()
-        self.step = -1
 
         self.join(gc)
         time.sleep(2)
@@ -44,7 +43,6 @@ class GimkitBot():
         return self.driver.find_element_by_xpath(f'//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[{o}]/div/div/div/div')
 
     def main_act(self):
-        self.step = 0
         question = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[1]/div/div/div/div')
         self.question_text = question.text
 
@@ -59,7 +57,6 @@ class GimkitBot():
             self.clicked = b1a_text
         else:
             correct = questions[self.question_text]
-            print(questions[self.question_text])
             if b1a_text == correct:
                 self.clicked = b1a_text
                 self.gopt(1).click()
@@ -75,12 +72,10 @@ class GimkitBot():
         self.Response()
 
     def Response(self):
-        self.step = 1
         time.sleep(wait)
         r_o_w = self.driver.find_element_by_xpath(
             '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div[2]/span[1]/div/div/div')
         if r_o_w.text == "View Correct Answer":
-            print("Wrong")
             r_o_w.click()
             time.sleep(wait)
             right_answer = self.driver.find_element_by_xpath(
@@ -90,12 +85,10 @@ class GimkitBot():
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div[2]/span/div/div/div')
             ahhh.click()
         else:
-            print("right")
             questions[self.question_text] = self.clicked
             self.upgrade()
 
     def upgrade(self):
-        self.step = 2
         money = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[1]/div/div/div[2]/div[2]/div/div')
         money_text = money.text.replace('$', '')
         money_text = money_text.replace(',', '')
@@ -103,7 +96,6 @@ class GimkitBot():
             shop = self.driver.find_element_by_xpath(
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div[2]/span[1]/div/div/div')
             shop.click()
-            self.step = 3
             time.sleep(wait)
             upgrade = self.driver.find_element_by_xpath(
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[1]/div[' + str(upgrade_num[0]) + ']')
@@ -117,7 +109,7 @@ class GimkitBot():
             purchase = self.driver.find_element_by_xpath(
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[1]/div/div[3]/div/div')
             purchase.click()
-            time.sleep(0.1)
+            time.sleep(0.5)
             exit = self.driver.find_element_by_xpath('/html/body/div[3]/div/div/div[4]')
             exit.click()
             time.sleep(0.2)
@@ -141,9 +133,11 @@ class GimkitBot():
                 except:
                     pass
                 time.sleep(3)
-
-                menu = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[1]/div/div/button[1]')
-                menu.click()
-                back = self.driver.find_element_by_xpath('/html/body/div[3]/div[3]/nav/span[1]/div')
-                back.click()
+                try:
+                    menu = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[1]/div/div/button[1]')
+                    menu.click()
+                    back = self.driver.find_element_by_xpath('/html/body/div[3]/div[3]/nav/span[1]/div')
+                    back.click()
+                except:
+                    print("Something is blocking the game. Are you iced? In the waiting room?")
                 self.start()
