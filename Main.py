@@ -14,11 +14,14 @@ wait = 0.3
 
 
 class GimkitBot():
-    def __init__(self):
+    def __init__(self, gc, name):
         self.driver = webdriver.Chrome()
-        self.step = -1
 
-    def join(self, gamecode):
+        self.join(gc, name)
+        time.sleep(2)
+        self.start()
+
+    def join(self, gamecode, name):
         self.driver.get("https://www.gimkit.com/play")
         time.sleep(3)
         GC_in = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div/form/input')
@@ -26,7 +29,7 @@ class GimkitBot():
         join_button = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div/div')
         join_button.click()
         time.sleep(5)
-        GC_in.send_keys("Your Name" + str(random.randint(0,100)))
+        GC_in.send_keys(name)
         join_button.click()
 
     def next(self):
@@ -35,58 +38,44 @@ class GimkitBot():
         nexta.click()
         time.sleep(wait)
 
+    def gopt(self, o):
+        # get answer for o as option key.
+        return self.driver.find_element_by_xpath(f'//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[{o}]/div/div/div/div')
+
     def main_act(self):
-        self.step = 0
         question = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[1]/div/div/div/div')
         self.question_text = question.text
 
-
-        b1a = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div/div/div')
-        b2a = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[2]/div/div/div/div')
-        b3a = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[3]/div/div/div/div')
-        b4a = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[4]/div/div/div/div')
-        b1a_text = b1a.text
-        b2a_text = b2a.text
-        b3a_text = b3a.text
-        b4a_text = b4a.text
+        b1a_text = self.gopt(1).text
+        b2a_text = self.gopt(2).text
+        b3a_text = self.gopt(3).text
+        b4a_text = self.gopt(4).text
         time.sleep(0.1)
         if not self.question_text in questions:
             questions[self.question_text] = ""
-            b1a = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div/div/div')
-            b1a.click()
+            self.gopt(1).click()
             self.clicked = b1a_text
         else:
             correct = questions[self.question_text]
-            print(questions[self.question_text])
             if b1a_text == correct:
                 self.clicked = b1a_text
-                b1a = self.driver.find_element_by_xpath(
-                    '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div/div/div')
-                b1a.click()
+                self.gopt(1).click()
             elif b2a_text == correct:
                 self.clicked = b2a_text
-                b2a = self.driver.find_element_by_xpath(
-                    '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[2]/div/div/div/div')
-                b2a.click()
+                self.gopt(2).click()
             elif b3a_text == correct:
                 self.clicked = b3a_text
-                b3a = self.driver.find_element_by_xpath(
-                    '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[3]/div/div/div/div')
-                b3a.click()
+                self.gopt(3).click()
             elif b4a_text == correct:
                 self.clicked = b4a_text
-                b4a = self.driver.find_element_by_xpath(
-                    '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[4]/div/div/div/div')
-                b4a.click()
+                self.gopt(4).click()
         self.Response()
 
     def Response(self):
-        self.step = 1
         time.sleep(wait)
         r_o_w = self.driver.find_element_by_xpath(
             '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div[2]/span[1]/div/div/div')
         if r_o_w.text == "View Correct Answer":
-            print("Wrong")
             r_o_w.click()
             time.sleep(wait)
             right_answer = self.driver.find_element_by_xpath(
@@ -96,19 +85,17 @@ class GimkitBot():
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div[2]/span/div/div/div')
             ahhh.click()
         else:
-            print("right")
             questions[self.question_text] = self.clicked
             self.upgrade()
 
     def upgrade(self):
-        self.step = 2
         money = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[1]/div/div/div[2]/div[2]/div/div')
         money_text = money.text.replace('$', '')
-        if int(money_text.replace(',', '')) >= upgrade_cost[0]:
+        money_text = money_text.replace(',', '')
+        if int(money_text) >= upgrade_cost[0]:
             shop = self.driver.find_element_by_xpath(
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div[2]/span[1]/div/div/div')
             shop.click()
-            self.step = 3
             time.sleep(wait)
             upgrade = self.driver.find_element_by_xpath(
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[1]/div[' + str(upgrade_num[0]) + ']')
@@ -122,7 +109,7 @@ class GimkitBot():
             purchase = self.driver.find_element_by_xpath(
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[1]/div/div[3]/div/div')
             purchase.click()
-            time.sleep(0.1)
+            time.sleep(0.5)
             exit = self.driver.find_element_by_xpath('/html/body/div[3]/div/div/div[4]')
             exit.click()
             time.sleep(0.2)
@@ -146,9 +133,11 @@ class GimkitBot():
                 except:
                     pass
                 time.sleep(3)
-
-                menu = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[1]/div/div/button[1]')
-                menu.click()
-                back = self.driver.find_element_by_xpath('/html/body/div[3]/div[3]/nav/span[1]/div')
-                back.click()
+                try:
+                    menu = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[1]/div/div/button[1]')
+                    menu.click()
+                    back = self.driver.find_element_by_xpath('/html/body/div[3]/div[3]/nav/span[1]/div')
+                    back.click()
+                except:
+                    print("Something is blocking the game. Are you iced? In the waiting room?")
                 self.start()

@@ -8,10 +8,9 @@ error_var = StringVar()
 def startcmd():
     if code.get() == '':
         return error_var.set("You didn't enter a code. Try entering a code.")
-    bot = GimkitBot()
-    bot.join(code.get())
-    time.sleep(2)
-    bot.start()
+    if len(nameentry.get()) > 20:
+        return error_var.set("Name must be less than 20 characters.")
+    GimkitBot(code.get(), nameentry.get())
 
 
 class EntryWithPlaceholder(tkinter.Entry):
@@ -50,6 +49,8 @@ title.config(font = ("arial", 20))
 
 code = EntryWithPlaceholder(root, placeholder="Game Code")
 code.pack(padx = 10, pady = 10)
+nameentry = EntryWithPlaceholder(root, placeholder="Username")
+nameentry.pack(padx = 10, pady = 10)
 
 start = Button(root, text = "Start", command = startcmd)
 start.pack(pady = 10)
