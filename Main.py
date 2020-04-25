@@ -14,14 +14,14 @@ wait = 0.3
 
 
 class GimkitBot():
-    def __init__(self, gc):
+    def __init__(self, gc, name):
         self.driver = webdriver.Chrome()
 
-        self.join(gc)
+        self.join(gc, name)
         time.sleep(2)
         self.start()
 
-    def join(self, gamecode):
+    def join(self, gamecode, name):
         self.driver.get("https://www.gimkit.com/play")
         time.sleep(3)
         GC_in = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div/form/input')
@@ -29,7 +29,7 @@ class GimkitBot():
         join_button = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div/div')
         join_button.click()
         time.sleep(5)
-        GC_in.send_keys("Your Name" + str(random.randint(0,100)))
+        GC_in.send_keys(name)
         join_button.click()
 
     def next(self):
