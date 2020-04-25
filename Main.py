@@ -4,7 +4,6 @@ from selenium.common.exceptions import ElementClickInterceptedException
 import time
 import random
 
-#gamecode = "51993"
 questions = {}
 upgrade_num = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 3, 2, 1, 3, 2, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
 upgrade_cost = [10, 15, 50, 100, 150, 300, 1000, 1500, 2000, 10000, 12000, 15000, 75000, 85000, 115000, 300000, 450000,
@@ -18,12 +17,10 @@ class GimkitBot():
     def __init__(self):
         self.driver = webdriver.Chrome()
         self.step = -1
-        #self.driver.set_window_position(0,-10000)
-        # self.driver.get("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
     def join(self, gamecode):
         self.driver.get("https://www.gimkit.com/play")
-        time.sleep(5)
+        time.sleep(3)
         GC_in = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div/form/input')
         GC_in.send_keys(gamecode)
         join_button = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div/div')
@@ -62,22 +59,22 @@ class GimkitBot():
             correct = questions[self.question_text]
             print(questions[self.question_text])
             if b1a_text == correct:
-                clicked = b1a_text
+                self.clicked = b1a_text
                 b1a = self.driver.find_element_by_xpath(
                     '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[1]/div/div/div/div')
                 b1a.click()
             elif b2a_text == correct:
-                clicked = b2a_text
+                self.clicked = b2a_text
                 b2a = self.driver.find_element_by_xpath(
                     '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[2]/div/div/div/div')
                 b2a.click()
             elif b3a_text == correct:
-                clicked = b3a_text
+                self.clicked = b3a_text
                 b3a = self.driver.find_element_by_xpath(
                     '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[3]/div/div/div/div')
                 b3a.click()
             elif b4a_text == correct:
-                clicked = b4a_text
+                self.clicked = b4a_text
                 b4a = self.driver.find_element_by_xpath(
                     '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div[2]/div[4]/div/div/div/div')
                 b4a.click()
