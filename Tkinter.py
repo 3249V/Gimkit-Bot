@@ -8,6 +8,8 @@ error_var = StringVar()
 def startcmd():
     if code.get() == '':
         return error_var.set("You didn't enter a code. Try entering a code.")
+    if len(nameentry.get()) > 20:
+        return error_var.set("Name must be less than 20 characters.")
     GimkitBot(code.get(), nameentry.get())
 
 
