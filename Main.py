@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementClickInterceptedException
 import time
+import threading
 import random
 
 questions = {}
@@ -16,14 +17,17 @@ wait = 0.3
 class GimkitBot():
     def __init__(self, gc, name):
         self.driver = webdriver.Chrome()
+        self.questions = {}
 
-        self.join(gc, name)
+        x = threading.Thread(self.join(gc, name))
+        x.start()
         time.sleep(2)
-        self.start()
+        x = threading.Thread(self.start())
+        x.start()
 
     def join(self, gamecode, name):
         self.driver.get("https://www.gimkit.com/play")
-        time.sleep(3)
+        time.sleep(5)
         GC_in = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div/form/input')
         GC_in.send_keys(gamecode)
         join_button = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div/div')
@@ -51,12 +55,12 @@ class GimkitBot():
         b3a_text = self.gopt(3).text
         b4a_text = self.gopt(4).text
         time.sleep(0.1)
-        if not self.question_text in questions:
-            questions[self.question_text] = ""
+        if not self.question_text in self.questions:
+            self.questions[self.question_text] = ""
             self.gopt(1).click()
             self.clicked = b1a_text
         else:
-            correct = questions[self.question_text]
+            correct = self.questions[self.question_text]
             if b1a_text == correct:
                 self.clicked = b1a_text
                 self.gopt(1).click()
@@ -69,7 +73,8 @@ class GimkitBot():
             elif b4a_text == correct:
                 self.clicked = b4a_text
                 self.gopt(4).click()
-        self.Response()
+        x = threading.Thread(self.Response())
+        x.start()
 
     def Response(self):
         time.sleep(wait)
@@ -80,13 +85,14 @@ class GimkitBot():
             time.sleep(wait)
             right_answer = self.driver.find_element_by_xpath(
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div[1]/div/div[3]/div/div/div')
-            questions[self.question_text] = right_answer.text
+            self.questions[self.question_text] = right_answer.text
             ahhh = self.driver.find_element_by_xpath(
                 '//*[@id="root"]/div/div/div/div[1]/div[2]/div/div/div/div[2]/span/div/div/div')
             ahhh.click()
         else:
-            questions[self.question_text] = self.clicked
-            self.upgrade()
+            self.questions[self.question_text] = self.clicked
+            x = threading.Thread(self.upgrade())
+            x.start()
 
     def upgrade(self):
         money = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div[1]/div[1]/div/div/div[2]/div[2]/div/div')
@@ -117,14 +123,16 @@ class GimkitBot():
             del upgrade_num[0]
             del upgrade_cost[0]
         else:
-            self.next()
+            x = threading.Thread(self.next())
+            x.start()
 
     def start(self):
         while 1:
 
             try:
                 time.sleep(wait)
-                self.main_act()
+                x = threading.Thread(self.main_act())
+                x.start()
             except (ElementClickInterceptedException, NoSuchElementException):
                 time.sleep(0.5)
                 try:
@@ -140,4 +148,6 @@ class GimkitBot():
                     back.click()
                 except:
                     print("Something is blocking the game. Are you iced? In the waiting room?")
-                self.start()
+
+                x = threading.Thread(self.start())
+                x.start()
