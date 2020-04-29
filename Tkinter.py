@@ -2,6 +2,7 @@ from tkinter import Tk, StringVar, Label, Button, Entry, filedialog
 import tkinter
 from Main import GimkitBot
 import time
+import _thread as thread
 import os
 
 root = Tk()
@@ -16,8 +17,10 @@ def startcmd():
         return error_var.set("You didn't enter a code. Try entering a code.")
     if len(nameentry.get()) > 20:
         return error_var.set("Name must be less than 20 characters.")
-    GimkitBot(code.get(), nameentry.get())
+    thread.start_new_thread(starting, ())
 
+def starting():
+    GimkitBot(code.get(), nameentry.get())
 
 class EntryWithPlaceholder(tkinter.Entry):
     def __init__(self, master=None, placeholder="PLACEHOLDER", color='grey'):
