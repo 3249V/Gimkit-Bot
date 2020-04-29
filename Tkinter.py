@@ -1,9 +1,15 @@
-from tkinter import Tk, StringVar, Label, Button, Entry
+from tkinter import Tk, StringVar, Label, Button, Entry, filedialog
 import tkinter
 from Main import GimkitBot
 import time
+import os
+
 root = Tk()
 error_var = StringVar()
+
+
+if not os.path.exists("saves"):
+    os.mkdir("saves")
 
 def startcmd():
     if code.get() == '':
@@ -39,22 +45,33 @@ class EntryWithPlaceholder(tkinter.Entry):
         if not self.get():
             self.put_placeholder()
 
+
+def file_dialog():
+    filename = filedialog.askopenfilename(initialdir="/", title="Select A File", filetype=(("json", "*.json"), ("All Files", "*,*")))
+
+def get_dict():
+    print(GimkitBot.questions)
+
 root.title("Gimkit Bot")
 root.geometry('400x300')
 root.iconbitmap(r'Icon.ico')
 root.resizable(False, False)
 title = Label(root, text = "Welcome to the Gimkit Bot!")
 title.pack(pady = 10)
-title.config(font = ("arial", 20))
+title.config(font=("arial", 20))
 
 code = EntryWithPlaceholder(root, placeholder="Game Code")
-code.pack(padx = 10, pady = 10)
+code.pack(padx=10, pady=10)
+
 nameentry = EntryWithPlaceholder(root, placeholder="Username")
-nameentry.pack(padx = 10, pady = 10)
+nameentry.pack(padx=10, pady=10)
 
-start = Button(root, text = "Start", command = startcmd)
-start.pack(pady = 10)
+file_select = Button(root, text="Browse A File", command=get_dict)
+file_select.pack(pady=10)
 
-error_text = Label(root, textvariable = error_var)
-error_text.pack(pady = 10)
+start = Button(root, text="Start", command=startcmd)
+start.pack(pady=10)
+
+error_text = Label(root, textvariable=error_var)
+error_text.pack(pady=10)
 root.mainloop()
